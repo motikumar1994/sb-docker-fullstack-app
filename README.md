@@ -33,10 +33,8 @@ yml
 ---
 
 ## Prerequisites
-
 - Docker
 - Docker Compose
-- 
 ## How to Run the Application
 
 ### 1. Clone the Repository
