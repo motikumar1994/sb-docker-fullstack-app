@@ -48,5 +48,5 @@ docker-compose up --build
 
 Access the Application:-
 Frontend: http://localhost:4200
-Backend API: http://localhost:8088/api
+Backend API: http://localhost:8088/api/v1/employees
 
