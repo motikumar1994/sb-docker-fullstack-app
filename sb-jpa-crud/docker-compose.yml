@@ -1,0 +1,52 @@
+services:
+  mysqldb:
+    container_name: mysqldb
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: employee_management_system
+    networks:
+      - sb-jpa-crud_sb-mysql-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redisdb:
+    container_name: redisdb
+    image: redis:7.0-alpine
+    networks:
+      - sb-jpa-crud_sb-mysql-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  employee-management:
+    container_name: employee-management
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "8088:8088"
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+      redisdb:
+        condition: service_healthy
+    networks:
+      - sb-jpa-crud_sb-mysql-network
+    restart: on-failure
+    environment:
+      SPRING_REDIS_HOST: redisdb
+      SPRING_REDIS_PORT: 6379
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/employee_management_system?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_PROFILES_ACTIVE: docker
+
+networks:
+  sb-jpa-crud_sb-mysql-network:
+    driver: bridge

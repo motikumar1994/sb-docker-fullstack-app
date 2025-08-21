@@ -1,0 +1,40 @@
+spring:
+  profiles:
+    active: docker
+
+  application:
+    name: employee-management
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/employee_management_system?useSSL=false
+    username: root
+    password: root
+
+  jpa:
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQLDialect
+      hibernate.show_sql: true
+      hibernate.format_sql: true
+    hibernate:
+      ddl-auto: update
+
+  data:
+    redis:
+      host: redisdb
+      port: 6379
+
+  cache:
+    type: redis
+    redis:
+      cache-null-values: true
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          redis: DEBUG
+        cache: DEBUG
+
+server:
+  port: 8088
