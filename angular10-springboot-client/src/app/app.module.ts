@@ -14,7 +14,7 @@ import { UpdateEmployeeComponent } from './update-employee/update-employee.compo
     CreateEmployeeComponent,
     EmployeeDetailsComponent,
     EmployeeListComponent,
-    UpdateEmployeeComponent
+    UpdateEmployeeComponent,
   ],
   imports: [
     BrowserModule,
