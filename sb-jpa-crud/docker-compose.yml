@@ -1,17 +1,23 @@
+
 services:
   mysqldb:
     container_name: mysqldb
     image: mysql:8.0
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: employee_management_system
+    secrets:
+      - mysql_root_password
     networks:
       - sb-jpa-crud_sb-mysql-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
       interval: 10s
       timeout: 5s
       retries: 5
+
+    volumes:
+      - mysql_data:/var/lib/mysql
 
   redisdb:
     container_name: redisdb
@@ -23,6 +29,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+    volumes:
+      - redis_data:/data
 
   employee-management:
     container_name: employee-management
@@ -43,10 +52,25 @@ services:
       SPRING_REDIS_HOST: redisdb
       SPRING_REDIS_PORT: 6379
       SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/employee_management_system?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATASOURCE_USERNAME: ${MYSQL_USER}
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD}
       SPRING_PROFILES_ACTIVE: docker
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
 
 networks:
   sb-jpa-crud_sb-mysql-network:
     driver: bridge
+
+secrets:
+  mysql_root_password:
+    file: ./secrets/mysql_root_password.txt
+
+volumes:
+  mysql_data:
+    name: sb_mysql_data
+  redis_data:
+    name: sb_redis_data

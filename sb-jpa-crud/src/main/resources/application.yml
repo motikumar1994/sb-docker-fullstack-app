@@ -6,9 +6,9 @@ spring:
     name: employee-management
 
   datasource:
-    url: jdbc:mysql://localhost:3306/employee_management_system?useSSL=false
-    username: root
-    password: root
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
 
   jpa:
     properties:
@@ -20,8 +20,8 @@ spring:
 
   data:
     redis:
-      host: redisdb
-      port: 6379
+      host: ${SPRING_REDIS_HOST}
+      port: ${SPRING_REDIS_PORT}
 
   cache:
     type: redis
